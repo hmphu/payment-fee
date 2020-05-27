@@ -81,4 +81,29 @@ class Brander_PaymentFee_Helper_Data extends Mage_Core_Helper_Abstract {
             return Mage::app()->getStore();
         }
     }
+
+    public function addFeeToOrderTotals(Mage_Sales_Block_Order_Totals $block)
+    {
+        $totals = $block->getTotals();
+        if(!is_array($totals) || empty($totals)){
+            return $totals;
+        }
+
+        $order = $block->getSource();
+
+        $paymentFeeTitle  = Mage::getModel('payment_fee/fee')->getTotalTitle($order->getPayment()->getMethodInstance()->getCode());
+        $paymentFeeTotal = [
+            'fee' => new Varien_Object(array(
+                'code'      => 'fee',
+                'value'     => $order->getFeeAmount(),
+                'base_value'=> $order->getBaseFeeAmount(),
+                'label'     => $paymentFeeTitle,
+            ))
+        ];
+
+        $indexOfGrandTotal = array_search('grand_total', array_keys($totals));
+        array_splice( $totals, $indexOfGrandTotal, 0, $paymentFeeTotal );
+
+        return $totals;
+    }
 }

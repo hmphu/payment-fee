@@ -31,6 +31,11 @@
                     <sales_order_totals>Brander_PaymentFee_Block_Adminhtml_Sales_Order_Totals</sales_order_totals>
                 </rewrite>
             </adminhtml>
+            <sales>
+                <rewrite>
+                    <order_totals>Brander_PaymentFee_Block_Sales_Order_Totals</order_totals>
+                </rewrite>
+            </sales>
         </blocks>
         <helpers>
             <payment_fee>
