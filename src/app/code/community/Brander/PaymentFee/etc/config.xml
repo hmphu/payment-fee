@@ -26,6 +26,11 @@
             <payment_fee>
                 <class>Brander_PaymentFee_Block</class>
             </payment_fee>
+            <adminhtml>
+                <rewrite>
+                    <sales_order_totals>Brander_PaymentFee_Block_Adminhtml_Sales_Order_Totals</sales_order_totals>
+                </rewrite>
+            </adminhtml>
         </blocks>
         <helpers>
             <payment_fee>
