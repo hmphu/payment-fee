@@ -56,29 +56,32 @@ class Brander_PaymentFee_Model_Sales_Quote_Address_Total_Fee extends Mage_Sales_
      * @return Brander_PaymentFee_Model_Sales_Quote_Address_Total_Fee
      */
     public function fetch(Mage_Sales_Model_Quote_Address $address) {
-        $amount = Mage::helper('payment_fee')->getFee();
+        $feeConfig = Mage::helper('payment_fee')->getFee();
         $paymentMethod = $address->getQuote()->getPayment();
+        $feeAmount = $address->getFeeAmount();
 
-        if ($amount != 0 && $address->getAddressType() == 'shipping' && is_object($paymentMethod)) {    // billing & shipping address
-            $title = Mage::getModel('payment_fee/fee')->getTotalTitle(null, $address->getQuote());
-
+        if ($feeAmount != 0 && !empty($feeConfig) && $address->getAddressType() == 'shipping' && is_object($paymentMethod)) { // billing & shipping address
             try {
                 $methodCode = $paymentMethod->getMethodInstance()->getCode();
             } catch(\Exception $e) {
                 return $this;
             }
-            if (!isset($amount[$methodCode])) {
+            
+            if (!isset($feeConfig[$methodCode])) {
                 return $this;
             }
+
+            $title = Mage::getModel('payment_fee/fee')->getTotalTitle(null, $address->getQuote());
 
             $address->addTotal(
                 array(
                     'code' => $this->getCode(),
-                    'title' => $amount[$methodCode]['description'],
-                    'value' => $amount[$methodCode]['fee']
+                    'title' => $title,
+                    'value' => $feeAmount,
                 )
             );
-            return $this;
         }
+
+        return $this;
     }
 }
